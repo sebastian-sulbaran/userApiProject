@@ -1,9 +1,9 @@
-<h1>Basic user profile API managment</h1>
+<h1>Basic user profile API managment with Laravel</h1>
 
 
 ## About 
 
-This litle project is about implementing a basic API to:
+This litle project is about implementing a basic API with Laravel 5.8:
 
 - List all users info.
 - Show user profile info.
