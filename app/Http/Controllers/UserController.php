@@ -55,6 +55,7 @@ class UserController extends Controller
                 return response()->json(['msg' => 'The image file is too big ' ],400);
             }
         }
+
         $parameters=$request->all();
         
         //Extra user attribute in case of token validation requirement
@@ -63,7 +64,9 @@ class UserController extends Controller
 
         //Attaching image system path to user attribute
 
-        $parameters['image_path']=$fileName;
+        if (isset($fileName)) {
+            $parameters['image_path']=asset('/').$fileName;
+        }
 
         return response()->json(User::create($parameters),201);
     }
@@ -96,9 +99,29 @@ class UserController extends Controller
                 return response()->json($validator->errors(),400);
             }
             
+            //Additional validation over image field comparing its size against max uplodad
+
+            if ($request->hasFile('Image')) {
+                $file = $request->file('Image');
+                if ($file->getClientSize() <= $file->getMaxFilesize()) {
+                    $fileName = $file->store('images');
+                } else {
+                    return response()->json(['msg' => 'The image file is too big ' ],400);
+                }
+            }
+            
             //Otherwise the user is updated
 
-            $user->update($request->all());
+                
+            $parameters=$request->all();
+            
+            //Attaching image system path to user attribute
+
+            if (isset($fileName)) {
+                $parameters['image_path']=asset('/').$fileName;
+            }
+
+            $user->update($parameters);
             return response()->json($user,200);
         }
 
